@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/head :: commonHead('Home - Práctica 2')" />
+
+<body>
+    <header class="header">
+        <h1>Práctica Obligatoria 2</h1>
+        <nav>
+            <a th:href="@{/}">Home</a>
+            <a th:href="@{/login}">Login</a>
+            <a th:href="@{/simulate}">Simulaciones</a>
+        </nav>
+    </header>
+    <main class="container">
+        <p>El sistema centraliza el tratamiento de excepciones y llamadas externas.</p>
+    </main>
+    <footer class="footer">
+        <small>&copy; 2025 Empresa X</small>
+    </footer>
+</body>
+
+</html>

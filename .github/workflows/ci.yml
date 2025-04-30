@@ -1,0 +1,72 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-java:
+    name: Build & Test Java
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Build with Maven
+        run: mvn -B package --file ui-web/pom.xml
+      - name: Run Java tests
+        run: mvn test --file ui-web/pom.xml
+
+  build-python:
+    name: Build & Test Python
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.10]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install deps
+        run: |
+          cd python-api
+          pip install poetry
+          poetry init --no-interaction
+          poetry add Flask Flask-SQLAlchemy requests pytest
+      - name: Run Python tests
+        run: |
+          cd python-api
+          pytest --maxfail=1 --disable-warnings -q
+
+  docker:
+    name: Build & Push Docker
+    needs: [build-java, build-python]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build Docker Images
+        run: |
+          docker-compose build
+      # Opcional: push a tu registry
+      # - name: Login to Registry
+      #   run: echo "${{ secrets.REGISTRY_PASS }}" | docker login ${{ secrets.REGISTRY_URL }} -u ${{ secrets.REGISTRY_USER }} --password-stdin
+      # - name: Push Services
+      #   run: |
+      #     docker tag practica2_ui-web ${{ secrets.REGISTRY_URL }}/practica2_ui-web:latest
+      #     docker tag practica2_python-api ${{ secrets.REGISTRY_URL }}/practica2_python-api:latest
+      #     docker push ${{ secrets.REGISTRY_URL }}/practica2_ui-web:latest
+      #     docker push ${{ secrets.REGISTRY_URL }}/practica2_python-api:latest

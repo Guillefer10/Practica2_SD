@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Simulaciones API</title>
+</head>
+
+<body>
+    <h2>Simulación de Excepciones</h2>
+    <form method="get" th:action="@{/simulate}">
+        <div>
+            <label>Ruta archivo: <input name="path" placeholder="data.txt" /></label>
+            <button type="submit">Test File</button>
+            <pre th:text="${fileResult}">Aquí saldrá el resultado de file-test</pre>
+        </div>
+        <div>
+            <label>Invalid DB:
+                <select name="invalid">
+                    <option value="false">False</option>
+                    <option value="true">True</option>
+                </select>
+            </label>
+            <button type="submit">Test DB</button>
+            <pre th:text="${dbResult}">Aquí saldrá el resultado de db-test</pre>
+        </div>
+        <div>
+            <label>Nombre Pokémon: <input name="name" placeholder="pikachu" /></label>
+            <button type="submit">Test Pokémon</button>
+            <pre th:text="${pokeResult}">Aquí saldrá el resultado de poke-test</pre>
+        </div>
+    </form>
+</body>
+
+</html>

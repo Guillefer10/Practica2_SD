@@ -1,0 +1,7 @@
+{
+    "java.project.referencedLibraries": [
+        "ui-web/lib/**/*.jar"
+    ],
+    "python.pythonPath": "python3",
+    "editor.formatOnSave": true
+}
